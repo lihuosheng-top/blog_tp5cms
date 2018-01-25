@@ -21,6 +21,11 @@ class Category extends Controller
     //首页
     public function index()
     {
+        //获取栏目数据
+        $field =db('cate')->select();
+//        halt($field);
+        //分配到网页上面
+        $this->assign('field',$field);
         return $this->fetch();
     }
     //添加子栏目
@@ -40,6 +45,29 @@ class Category extends Controller
             }
 
         }
+        return $this->fetch();
+    }
+
+
+    //添加子集
+    public function addSon()
+    {
+        if(request()->isPost())
+        {
+            $res =$this->db->store(input('post.'));
+            if($res['valid'])
+            {
+                //操作成功
+                $this->success($res['msg'],'index');exit;
+            }else{
+                $this->error($res['msg']);exit;
+            }
+        }
+        $cate_id =input('param.cate_id');
+//        halt($cate_id);
+        $data =$this->db->where('cate_id',$cate_id)->find();
+//        halt($data);
+        $this->assign('data',$data);
         return $this->fetch();
     }
 
