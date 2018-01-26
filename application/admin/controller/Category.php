@@ -71,5 +71,35 @@ class Category extends Controller
         return $this->fetch();
     }
 
+    //编辑栏目
+    public function edit()
+    {
+        if(request()->isPost())
+        {
+//            halt($_POST);
+            $res =$this->db->edit(input('post.'));
+            if($res['valid'])
+            {
+                //执行成功
+                $this->success($res['msg'],'index');exit;
+            }else
+            {
+                $this->error($res['msg']);exit;
+            }
+        }
+
+        //接收cate_id
+        $cate_id = input('param.cate_id');
+//        halt($cate_id);
+        //获取旧数据
+        $oldData =$this->db->find($cate_id);
+//        halt($oldData);
+        $this->assign('oldData',$oldData);
+        //处理所属分类不能包含子集和自己
+        $cateData = $this->db->getCateDate($cate_id);
+        $this->assign('cateData',$cateData);
+        return $this->fetch();
+    }
+
 
 }
